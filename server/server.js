@@ -7,7 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "https://intervue-assignment-xi.vercel.app/",
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
@@ -15,11 +15,10 @@ const io = socketIo(server, {
 app.use(cors());
 app.use(express.json());
 
-// In-memory storage (replace with MongoDB in production)
 let currentPoll = null;
 let pollHistory = [];
-let students = new Map(); // socketId -> student info
-let answers = new Map(); // pollId -> { studentId: answer }
+let students = new Map(); 
+let answers = new Map();
 
 // Routes
 app.get("/api/poll/current", (req, res) => {
@@ -34,11 +33,9 @@ app.get("/api/poll/history", (req, res) => {
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
-  // Teacher creates a new poll
   socket.on("create_poll", (data) => {
     const { question, options, timeLimit = 60 } = data;
 
-    // Check if there's an active poll with pending answers
     if (currentPoll && currentPoll.status === "active") {
       const studentsAnswered = answers.get(currentPoll.id)?.size || 0;
       const totalStudents = students.size;
@@ -75,7 +72,6 @@ io.on("connection", (socket) => {
     }, timeLimit * 1000);
   });
 
-  // Student registers their name
   socket.on("register_student", (data) => {
     const { name } = data;
     students.set(socket.id, {
@@ -86,13 +82,11 @@ io.on("connection", (socket) => {
 
     socket.emit("registration_success", { studentId: socket.id });
 
-    // Send current poll if active
     if (currentPoll && currentPoll.status === "active") {
       socket.emit("new_poll", currentPoll);
     }
   });
 
-  // Student submits answer
   socket.on("submit_answer", (data) => {
     const { pollId, answer } = data;
     const student = students.get(socket.id);
@@ -113,7 +107,6 @@ io.on("connection", (socket) => {
       return;
     }
 
-    // Record the answer
     pollAnswers.set(socket.id, answer);
     currentPoll.results[answer]++;
 
@@ -134,7 +127,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Teacher requests current results
   socket.on("get_poll_results", () => {
     if (currentPoll) {
       const pollAnswers = answers.get(currentPoll.id);
