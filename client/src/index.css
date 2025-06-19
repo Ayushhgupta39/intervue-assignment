@@ -1,0 +1,28 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  --font-sora: "Sora", "sans-serif";
+  --color-purple: #5767d0;
+  --color-light-purple: #7765da;
+  --color-dark-purple: #4f0dce;
+  --color-custom-white: #f2f2f2;
+  --color-custom-black: #373737;
+  --color-custom-gray: #6e6e6e;
+}
+
+.gradient-border {
+  border: 3px solid;
+  border-image-source: linear-gradient(92.24deg, #7765da -8.5%, #1d68bd 101.3%);
+}
+
+.gradient-button {
+  background: linear-gradient(99.18deg, #8f64e1 -46.89%, #1d68bd 223.45%);
+  color: white;
+}
+
+.gradient-background {
+  background: linear-gradient(90deg, #7565D9 0%, #4D0ACD 100%);
+
+}
