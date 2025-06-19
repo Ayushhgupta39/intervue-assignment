@@ -9,6 +9,7 @@ const socket = io("http://localhost:3001");
 
 function App() {
   const [userType, setUserType] = useState(null);
+  const [selectedUserType, setSelectedUserType] = useState(null); // New state for selection
   const [studentName, setStudentName] = useState("");
   const [isRegistered, setIsRegistered] = useState(false);
   const [showChat, setShowChat] = useState(false);
@@ -52,6 +53,12 @@ function App() {
     setUserType(type);
   };
 
+  const handleContinue = () => {
+    if (selectedUserType) {
+      handleUserTypeSelection(selectedUserType);
+    }
+  };
+
   if (!userType) {
     return (
       <div className="min-h-screen bg-white font-sora flex flex-col items-center justify-center">
@@ -76,13 +83,21 @@ function App() {
           <div
             onClick={(e) => {
               e.preventDefault();
-              setUserType("student");
+              setSelectedUserType("student"); // Only set selected state
             }}
-            className={`p-4 py-8 w-1/4 flex flex-col gap-2 rounded-xl ${
-              userType === "student"
-                ? "border-2 gradient-border"
-                : "border border-[#D9D9D9]"
-            } cursor-pointer hover:border-gray-400`}
+            className={`p-4 py-8 w-1/4 flex flex-col gap-2 rounded-xl cursor-pointer hover:border-gray-400 ${
+              selectedUserType === "student" ? "" : "border border-[#D9D9D9]"
+            }`}
+            style={
+              selectedUserType === "student"
+                ? {
+                    background:
+                      "linear-gradient(white, white) padding-box, linear-gradient(92.24deg, #7765da -8.5%, #1d68bd 101.3%) border-box",
+                    border: "3px solid transparent",
+                    borderRadius: "12px",
+                  }
+                : {}
+            }
           >
             <p className="font-semibold text-xl">I'm a Student</p>
             <p className="text-sm text-gray-500">
@@ -93,13 +108,21 @@ function App() {
           <div
             onClick={(e) => {
               e.preventDefault();
-              setUserType("teacher");
+              setSelectedUserType("teacher"); // Only set selected state
             }}
-            className={`p-4 py-8 w-1/4 flex flex-col gap-2 rounded-xl ${
-              userType === "teacher"
-                ? "border-2 gradient-border"
-                : "border border-[#D9D9D9]"
-            } cursor-pointer hover:border-gray-400`}
+            className={`p-4 py-8 w-1/4 flex flex-col gap-2 rounded-xl cursor-pointer hover:border-gray-400 ${
+              selectedUserType === "teacher" ? "" : "border border-[#D9D9D9]"
+            }`}
+            style={
+              selectedUserType === "teacher"
+                ? {
+                    background:
+                      "linear-gradient(white, white) padding-box, linear-gradient(92.24deg, #7765da -8.5%, #1d68bd 101.3%) border-box",
+                    border: "3px solid transparent",
+                    borderRadius: "12px",
+                  }
+                : {}
+            }
           >
             <p className="font-semibold text-xl">I'm a Teacher</p>
             <p className="text-sm text-gray-500">
@@ -109,37 +132,48 @@ function App() {
         </div>
 
         <button
-          onClick={() => handleUserTypeSelection(userType)}
-          className="my-8 w-1/6 gradient-button p-4 cursor-pointer hover:text-gray-400 px-4 rounded-full"
+          onClick={handleContinue}
+          disabled={!selectedUserType} // Disable if no selection
+          className={`my-8 w-1/6 p-4 px-4 rounded-full transition duration-200 ${
+            selectedUserType
+              ? "gradient-button text-white cursor-pointer hover:opacity-90"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          }`}
         >
           Continue
         </button>
-
-        {/* <div className="space-y-4">
-          <button
-            onClick={() => handleUserTypeSelection("teacher")}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-105"
-          >
-            I'm a Teacher
-          </button>
-          <button
-            onClick={() => handleUserTypeSelection("student")}
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 transform hover:scale-105"
-          >
-            I'm a Student
-          </button>
-        </div> */}
       </div>
     );
   }
 
   if (userType === "student" && !isRegistered) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center">
-        <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
-          <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-            Enter Your Name
-          </h2>
+      <div className="min-h-screen font-sora bg-white flex flex-col items-center justify-center px-4">
+        {/* Header Badge */}
+        <div className="flex justify-center mb-12">
+          <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+            <PiSparkleFill />
+            Intervue Poll
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="text-center max-w-2xl mb-12">
+          <h1 className="text-4xl font-sora font-bold text-black mb-6">
+            Let's Get Started
+          </h1>
+          <p className="text-gray-600 font-sora text-lg leading-relaxed">
+            If you're a student, you'll be able to{" "}
+            <span className="font-semibold text-black">
+              submit your answers
+            </span>
+            , participate in live polls, and see how your responses compare with
+            your classmates
+          </p>
+        </div>
+
+        {/* Form Section */}
+        <div className="w-full max-w-md">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -148,21 +182,28 @@ function App() {
                 handleStudentRegistration(name);
               }
             }}
-            className="space-y-4"
+            className="space-y-6"
           >
-            <input
-              type="text"
-              name="name"
-              placeholder="Your name"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              required
-            />
-            <button
-              type="submit"
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200"
-            >
-              Join Session
-            </button>
+            <div>
+              <label className="block text-gray-700 font-medium mb-3 text-left">
+                Enter your Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                placeholder="Rahul Bajaj"
+                className="w-full px-4 py-4 bg-gray-100 border-0 rounded-lg focus:ring-2 focus:ring-purple-500 focus:bg-white focus:outline-none transition-all duration-200 text-gray-900 placeholder-gray-500"
+                required
+              />
+            </div>
+            <div className="flex justify-center font-sora">
+              <button
+                type="submit"
+                className="w-1/2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-full transition duration-200 transform hover:scale-[1.02]"
+              >
+                Continue
+              </button>
+            </div>
           </form>
         </div>
       </div>
