@@ -18,7 +18,7 @@ const TeacherDashboard = ({ socket }) => {
 
   useEffect(() => {
     socket.emit("get_students");
-    fetch("http://localhost:3001/api/poll/history")
+    fetch("https://intervue-assignment-pk8r.onrender.com/api/poll/history")
       .then((res) => res.json())
       .then((data) => setPollHistory(data.history));
 
@@ -35,7 +35,7 @@ const TeacherDashboard = ({ socket }) => {
       setPollResults(results);
       setCurrentPoll(null);
       // Refresh history
-      fetch("http://localhost:3001/api/poll/history")
+      fetch("https://intervue-assignment-pk8r.onrender.com/api/poll/history")
         .then((res) => res.json())
         .then((data) => setPollHistory(data.history));
     });

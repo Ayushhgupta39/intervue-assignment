@@ -5,7 +5,7 @@ import StudentInterface from "./components/StudentInterface";
 import ChatPopup from "./components/ChatPopup";
 import { PiSparkleFill } from "react-icons/pi";
 
-const socket = io("http://localhost:3001");
+const socket = io("https://intervue-assignment-pk8r.onrender.com");
 
 function App() {
   const [userType, setUserType] = useState(null);

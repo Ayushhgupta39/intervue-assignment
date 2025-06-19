@@ -31,7 +31,7 @@ const StudentInterface = ({ socket, studentName }) => {
     });
 
     // Fetch current poll on load
-    fetch("http://localhost:3001/api/poll/current")
+    fetch("https://intervue-assignment-pk8r.onrender.com/api/poll/current")
       .then((res) => res.json())
       .then((data) => {
         if (data.poll && data.poll.status === "active") {
